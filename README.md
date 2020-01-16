@@ -53,13 +53,15 @@ Make sure the user you are running as is a member of `kvm` group:
 
 ### I need to change the SSH password before provisioning a VM instance or in the build plan.
 
-In order to deploy the VM with a secure password, modify/extend the cloud-init configuration in `./cloud-init/baseos/user-data`. Generate a new SHA-512 hashed password via: `mkpasswd --method=SHA-512 --rounds=4096 PASSWORD`
+In order to deploy the VM with a secure password, modify/extend the cloud-init configuration in `./cloud-init/baseos/user-data`. 
+
+Generate a new SHA-512 hashed password via: `mkpasswd --method=SHA-512 --rounds=4096 PASSWORD`
 
 If you need to rebuild with a different password, also edit the `ssh_username` and `ssh_password` values in the top variables block from `./baseos.json`.
 
 ### I need to access the built VM for debugging.
 
-During build, Packer is configured to expose a VNC access endpoint at 127.0.0.1:5900. Use any VNC client and loging using the `ssh_username` and `ssh_password` configured in the variables of the `baseos.json` plan.
+During build, Packer is configured to expose a VNC access endpoint at 127.0.0.1:5900. Use any VNC client and login using the `ssh_username` and `ssh_password` as configured in the variables block of `baseos.json` plan.
 
 You can pause the build at a certain point by adding a breakpoint provisioner to the build plan. For example in order to inspect the baseos VM state after Docker has been installed, add the breakpoint provisioner after the shell provisioner running `install_docker.sh`:
 

@@ -14,3 +14,6 @@ apt-mark hold kubelet kubeadm kubectl
 
 # Reset cloud-init
 cloud-init clean --reboot --logs
+
+echo  "Removing machine-id"
+truncate --size=0 /etc/machine-id
