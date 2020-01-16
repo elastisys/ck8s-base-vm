@@ -30,6 +30,12 @@ Pre-requisites:
 Build steps:
 
 1. Clone the repo and move to its directory.
+2. Configure SSH access for Packer:
+
+* Generate a SSH keypair (or use your existing one).
+* Edit `baseos.json` and modify all values of `ssh_private_key_file` to point to your private key.
+* Edit `cloud-init/baseos/user-data` and `cloud-init/baseos-test/user-data` and fill in `ssh_authorized_keys` with your public key
+
 2. Build the image: `$ make baseos`.
 3. Run tests: `$ make test`.
 4. Check `output-baseos` for the built qcow2 image and its associated checksum file.
