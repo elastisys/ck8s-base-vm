@@ -17,3 +17,4 @@ cloud-init clean --reboot --logs
 
 echo  "Removing machine-id"
 truncate --size=0 /etc/machine-id
+rm /home/ubuntu/.ssh/authorized_keys

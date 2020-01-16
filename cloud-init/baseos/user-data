@@ -1,11 +1,9 @@
 #cloud-config
-ssh_pwauth: true
 users:
-  - name: elastisys
+  - name: ubuntu
     sudo: ALL=(ALL) NOPASSWD:ALL
-    groups: users, admin
-    passwd: $6$rounds=4096$BoGnPvesg$sjQUXg8fJM15Ryqkujscm37d3bx6iVqGz8/cHnoJz/NI.uwD7xjyZbgXf2D2G58Bl4RrFVE1Fhls8Fcd//tX6.
-    lock_passwd: false
+    ssh-authorized-keys:
+      - ssh-rsa ...
 apt:
   preserve_sources_list: true
 package_update: false
