@@ -28,5 +28,14 @@ END
 swapoff -a
 sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
+# Add CloudStack cloud-init datasource, required by Exoscale for cloud-init enabled images
+cat << END >> /etc/cloud/cloud.cfg.d/99_exoscale.cfg
+datasource:
+  CloudStack: {}
+  None: {}
+datasource_list:
+  - CloudStack
+END
+
 # Reboot to cleanup swap files
 shutdown -r
