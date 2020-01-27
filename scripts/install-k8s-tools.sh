@@ -11,10 +11,3 @@ EOF
 apt-get update
 apt-get install -y kubelet kubeadm kubectl
 apt-mark hold kubelet kubeadm kubectl
-
-# Reset cloud-init
-cloud-init clean --reboot --logs
-
-echo  "Removing machine-id"
-truncate --size=0 /etc/machine-id
-rm /home/ubuntu/.ssh/authorized_keys
