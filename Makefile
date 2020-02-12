@@ -5,13 +5,13 @@ baseos: baseos.json
 	PACKER_LOG=1 CHECKPOINT_DISABLE=1 packer build -only=baseos baseos.json > baseos-build.log; \
 		case "$$?" in \
 			0) \
-			echo "Base image created." \
+			echo "BaseOS image created." \
 			;; \
 			1) \
-			echo "Image already present. Run make clean to remove all artefacts." \
+			echo "Image build directory is already present. Run make clean to remove all previous artefacts." \
 			;; \
 			*) \
-			echo "Unhandled error" \
+			echo "Error while building baseOS image, check baseos-build.log" \
 			;; \
 		  esac;
 
