@@ -3,4 +3,4 @@ users:
   - name: ubuntu
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh-authorized-keys:
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDoDcbULIDr3lTYYazXlxFgEZXqqyuKJorS+1g4qXDwiaKaz6na8cScsPHW7laude9ZAxlsPIWfWzTc91uAUbVIrf/ZGhJffGe5AN3t8DUP9+vfMRBq0c9B5jtPxvXi6e0E4qjGcH16vCUDlYSTBknQqbvtM5gX+n/nVCMVP7S00DbSw+5AMmtfLMvZM9CPlN69BGzzX/s1uSnsT0dXxtkgf1aV42HjppL2XsQmqzWvA6MExUbv1YGL1xvd8T0DGzTU5MWjoOpJULHptWRbJxe2n9eT+NXm96Q7SBlPA81GZiXzgRQxJz+ikIvv1BFVk923OVd86mjwv7JggFk2cVtL gabriel@gabriel-XPS-13-7390
+      - ssh-rsa ...
