@@ -1,0 +1,145 @@
+{
+  "description": "CK8S VM based on CentOS 7",
+  "variables": {
+    "disk_size": "20480",
+    "iso_url": "https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1907.qcow2",
+    "iso_checksum": "520d01c2f2e1ed24cb2f15a4325aa30773930a2961b5484a68cf11b4a415c512",
+    "vm_name": "baseos-centos7-1905",
+    "ssh_username": "centos"
+  },
+  "builders": [
+    {
+      "name": "baseos",
+      "type": "qemu",
+      "accelerator": "kvm",
+      "vm_name": "{{ user `vm_name` }}.qcow2",
+      "format": "qcow2",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "sha256",
+      "disk_image": true,
+      "disk_size": "{{ user `disk_size`}}",
+      "disk_interface": "virtio",
+      "net_device": "virtio-net",
+      "disk_compression": true,
+      "skip_compaction": false,
+      "headless": true,
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_private_key_file": "~/.ssh/id_rsa",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "10000s",
+      "shutdown_command": "echo 'shutdown -P now' > /tmp/shutdown.sh; sudo -S sh '/tmp/shutdown.sh'",
+      "http_directory": "cloud-init/baseos",
+      "http_port_min": 9000,
+      "http_port_max": 9100,
+      "vnc_bind_address": "0.0.0.0",
+      "vnc_port_min": 5900,
+      "vnc_port_max": 5900,
+      "floppy_files": [
+        "cloud-init/baseos/user-data",
+        "cloud-init/baseos/meta-data"
+      ],
+      "floppy_label": "cidata",
+      "qemuargs": [
+        [ "-m", "2048M" ],
+        [ "-smp", "2" ],
+        [ "-smbios", "type=1,product=RHEV" ]
+      ]
+    },
+    {
+      "name": "baseos-test",
+      "type": "qemu",
+      "accelerator": "kvm",
+      "vm_name": "test-baseos.qcow2",
+      "headless": true,
+      "output_directory": "./output-baseos-test",
+      "disk_image": true,
+      "disk_interface": "virtio",
+      "net_device": "virtio-net",
+      "use_backing_file": true,
+      "shutdown_command": "echo 'shutdown -P now' > /tmp/shutdown.sh; sudo -S sh '/tmp/shutdown.sh'",
+      "iso_url": "{{template_dir}}/output-baseos/{{ user `vm_name` }}.qcow2",
+      "iso_checksum_type": "file",
+      "iso_checksum_url": "{{template_dir}}/output-baseos/{{ user `vm_name` }}_sha256.checksums",
+      "disk_compression": false,
+      "skip_compaction": true,
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_private_key_file": "~/.ssh/id_rsa",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "10000s",
+      "vnc_bind_address": "0.0.0.0",
+      "vnc_port_min": 5900,
+      "vnc_port_max": 5900,
+      "http_directory": "cloud-init/baseos-test",
+      "floppy_files": [
+        "cloud-init/baseos-test/user-data",
+        "cloud-init/baseos-test/meta-data"
+      ],
+      "floppy_label": "cidata",
+      "qemuargs": [
+        [ "-m", "2048M" ],
+        [ "-smp", "2" ],
+        [ "-smbios", "type=1,product=RHEV" ]
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "script": "./scripts/base-setup.sh",
+      "expect_disconnect": true,
+      "environment_vars": [],
+      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
+      "only": ["baseos"]
+    },
+    {
+      "type": "shell",
+      "script": "./scripts/install-docker.sh",
+      "environment_vars": [],
+      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
+      "only": ["baseos"]
+    },
+    {
+      "type": "shell",
+      "script": "./scripts/install-k8s-tools.sh",
+      "environment_vars": [],
+      "pause_after": "10s",
+      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
+      "only": ["baseos"]
+    },
+    {
+      "type": "shell",
+      "script": "./scripts/clean-up.sh",
+      "environment_vars": [],
+      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
+      "only": ["baseos"]
+    },
+    {
+      "type": "shell",
+      "script": "./scripts/init-test-node.sh",
+      "environment_vars": [],
+      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
+      "only": ["baseos-test"]
+    },
+    {
+      "type": "inspec",
+      "pause_before": "30s",
+      "timeout": "10m",
+      "profile": "./tests/baseos-profile",
+      "inspec_env_vars": [ "CHEF_LICENSE=accept" ],
+      "extra_arguments": [ "-l", "debug" ],
+      "only": ["baseos-test"]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "checksum",
+      "checksum_types": [
+        "sha256",
+        "md5"
+      ],
+      "output": "./output-baseos/{{ user `vm_name` }}_{{.ChecksumType}}.checksums",
+      "only": ["baseos"]
+    }
+  ]
+}
