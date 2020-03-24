@@ -3,7 +3,7 @@
   "variables": {
     "disk_size": "20480",
     "iso_url": "http://cloud-images.ubuntu.com/releases/bionic/release/ubuntu-18.04-server-cloudimg-amd64.img",
-    "iso_checksum": "a720c34066dce5521134c0efa63d524c53f40c68db24cf161d759356a24aad0e",
+    "iso_checksum": "fe303093982221b85eeb0a3060851d6a3a012aa151daf77c6c49d2b727138794",
     "vm_name": "baseos.qcow2",
     "ssh_username": "ubuntu"
   },
