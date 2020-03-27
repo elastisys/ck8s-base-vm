@@ -38,4 +38,4 @@ datasource_list:
 END
 
 # Reboot to cleanup swap files
-shutdown -r
+reboot

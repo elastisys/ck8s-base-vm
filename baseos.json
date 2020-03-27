@@ -97,7 +97,6 @@
       "environment_vars": [
         "DEBIAN_FRONTEND=noninteractive"
       ],
-      "expect_disconnect": true,
       "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
       "only": ["baseos"]
     },
