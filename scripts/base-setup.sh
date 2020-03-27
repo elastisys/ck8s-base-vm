@@ -2,6 +2,9 @@
 
 set -e -x
 
+# Wait for boot to finish
+while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done
+
 # Disable unattended upgrades
 echo 'APT::Periodic::Enable "0";' >> /etc/apt/apt.conf.d/10periodic
 cat << END >> /etc/apt/apt.conf.d/51-disable-unattended-upgrades
