@@ -12,4 +12,6 @@ EOF
 
 apt-get update
 apt-get install -y kubelet=${version} kubeadm=${version} kubectl=${version}
+# Support nfs-provisioner and Falco 
+apt-get install -y nfs-common linux-headers-$(uname -r)
 apt-mark hold kubelet kubeadm kubectl
