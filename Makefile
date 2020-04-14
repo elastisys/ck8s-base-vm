@@ -23,4 +23,5 @@ baseos: baseos.json
 
 clean:
 	rm -rf output-baseos*
-	rm baseos-build*.log
+	rm -f baseos-build*.log
+	rm -rf packer_cache
