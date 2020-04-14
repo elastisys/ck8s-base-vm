@@ -72,3 +72,34 @@ You can pause the build at a certain point by adding a breakpoint provisioner to
   "only": ["baseos"]
 }
 ```
+
+## Publishing the image
+
+The resulting `.qcow2` image can be uploaded to many common cloud providers to be used as a template for spinning up virtual machines.
+This section describes some common cases.
+
+### Upload to S3 bucket
+
+Some cloud providers only support *pulling* the image, as opposed to "pushing" or uploading it directly.
+This means that you will first need to make the image publicly accessible, for example by uploading it to an S3 bucket.
+
+```bash
+BUCKET_NAME=ck8s-base-os
+VERSION=v0.0.5
+CONFIG=s3cfg.ini
+s3cmd --config ${CONFIG} put output-baseos/* s3://${BUCKET_NAME}/${VERSION}/
+# Make publicly accessible
+s3cmd --config ${CONFIG} setacl --acl-public --recursive s3://${BUCKET_NAME}/${VERSION}/
+# Check public URL
+s3cmd --config ${CONFIG} info s3://${BUCKET_NAME}/${VERSION}/baseos.qcow2
+```
+
+Using the public URL you can then import the image as a template for example on Exoscale.
+
+### Upload to OpenStack
+
+You can upload the image directly to OpenStack.
+
+```bash
+openstack image create --disk-format qcow2 --file output-baseos/baseos.qcow2 CK8S-BaseOS-${VERSION}
+```
