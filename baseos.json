@@ -53,7 +53,7 @@
       "shutdown_command": "echo 'shutdown -P now' > /tmp/shutdown.sh; sudo -S sh '/tmp/shutdown.sh'",
       "iso_url": "output-baseos/baseos.qcow2",
       "iso_checksum_type": "sha256",
-      "iso_checksum_url": "/home/lennart/workspace/ck8s-base-vm/output-baseos/{{ user `vm_name` }}_sha256.checksums",
+      "iso_checksum_url": "/tmp/ck8s-base-vm-checksums/{{ user `vm_name` }}_sha256.checksums",
       "disk_compression": false,
       "skip_compaction": true,
       "ssh_username": "{{ user `ssh_username` }}",
@@ -136,7 +136,7 @@
         "sha256",
         "md5"
       ],
-      "output": "./output-baseos/{{ user `vm_name` }}_{{.ChecksumType}}.checksums",
+      "output": "/tmp/ck8s-base-vm-checksums/{{ user `vm_name` }}_{{.ChecksumType}}.checksums",
       "only": ["baseos"]
     }
   ]
