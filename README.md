@@ -25,17 +25,10 @@ Pre-requisites:
 
 * Packer 1.5+ (https://www.packer.io/downloads.html)
 * KVM (https://help.ubuntu.com/community/KVM/Installation)
-* Chef InSpec (https://www.inspec.io/downloads/)
 
 Build steps:
 
 1. Clone the repo and move to its directory.
-2. Configure SSH access for Packer:
-
-* Generate a SSH keypair (or use your existing one).
-* Edit `baseos.json` and modify all values of `ssh_private_key_file` to point to your private key.
-* Edit `cloud-init/baseos/user-data` and `cloud-init/baseos-test/user-data` and fill in `ssh_authorized_keys` with your public key
-
 2. Build the image: `$ make baseos`.
 3. Run tests: `$ make test`.
 4. Check `output-baseos` for the built qcow2 image and its associated checksum file.
@@ -44,9 +37,11 @@ Build steps:
 
 ## Notes
 
-* Check `baseos-build.log` file for build related logs or `baseos-build.log` file for test related logs. 
+* Check `baseos-build.log` file for build related logs or `baseos-build.log` file for test related logs.
 * The tests use a backing image on top of the tested image in order to avoid altering the built artefact.
-* The compliance tests are very basic: included are checks for required binaries (docker, kubeadm etc.) and checks for the control-plane ports to be opened (TCP only).
+* The compliance tests are very basic: included are checks for required binaries (docker, kubeadm etc.) and checks that kubeadm init is successful.
+  Note that you will need to check the log for these results!
+* Known issue: relative path to checksum does not work (see https://github.com/hashicorp/packer/issues/9047)
 
 
 ## Troubleshooting
@@ -59,7 +54,7 @@ Make sure the user you are running as is a member of `kvm` group:
 
 ### I need to change the SSH password before provisioning a VM instance or in the build plan.
 
-In order to deploy the VM with a secure password, modify/extend the cloud-init configuration in `./cloud-init/baseos/user-data`. 
+In order to deploy the VM with a secure password, modify/extend the cloud-init configuration in `./cloud-init/baseos/user-data`.
 
 Generate a new SHA-512 hashed password via: `mkpasswd --method=SHA-512 --rounds=4096 PASSWORD`
 
