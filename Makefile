@@ -16,9 +16,6 @@ baseos: baseos.json
 			0) \
 			echo "BaseOS image created." \
 			;; \
-			1) \
-			echo "Image build directory is already present. Run make clean to remove all previous artefacts." \
-			;; \
 			*) \
 			echo "Error while building baseOS image, check baseos-build.log" \
 			;; \
