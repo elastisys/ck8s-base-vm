@@ -6,9 +6,14 @@
     "kubernetes_version": "1.15.11-00",
 
     "disk_size": "20480",
+
     "iso_url": "https://cloud-images.ubuntu.com/releases/bionic/release-20200317/ubuntu-18.04-server-cloudimg-amd64.img",
     "iso_checksum": "fe303093982221b85eeb0a3060851d6a3a012aa151daf77c6c49d2b727138794",
+
+
     "vm_name": "baseos.qcow2",
+    "output_iso_checksum_url": "/tmp/ck8s-base-vm-checksums/baseos_sha256.checksums",
+
     "ssh_username": "ubuntu"
   },
   "builders": [
@@ -44,35 +49,6 @@
         [ "-smp", "2" ],
         [ "-smbios", "type=1,serial=ds=nocloud-net;instance-id=packer;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/" ]
       ]
-    },
-    {
-      "name": "baseos-test",
-      "type": "qemu",
-      "accelerator": "kvm",
-      "vm_name": "test-baseos.qcow2",
-      "headless": true,
-      "output_directory": "./output-baseos-test",
-      "disk_image": true,
-      "use_backing_file": true,
-      "shutdown_command": "echo 'shutdown -P now' > /tmp/shutdown.sh; sudo -S sh '/tmp/shutdown.sh'",
-      "iso_url": "output-baseos/baseos.qcow2",
-      "iso_checksum_type": "sha256",
-      "iso_checksum_url": "/tmp/ck8s-base-vm-checksums/{{ user `vm_name` }}_sha256.checksums",
-      "disk_compression": false,
-      "skip_compaction": true,
-      "ssh_username": "{{ user `ssh_username` }}",
-      "ssh_private_key_file": ".ssh/id_rsa",
-      "ssh_port": 22,
-      "ssh_wait_timeout": "10000s",
-      "vnc_bind_address": "0.0.0.0",
-      "vnc_port_min": 5900,
-      "vnc_port_max": 5900,
-      "http_directory": "cloud-init/baseos-test",
-      "qemuargs": [
-        [ "-m", "2048M" ],
-        [ "-smp", "2" ],
-        [ "-smbios", "type=1,serial=ds=nocloud-net;instance-id=packer;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/" ]
-      ]
     }
   ],
   "provisioners": [
@@ -83,8 +59,7 @@
       "environment_vars": [
         "DEBIAN_FRONTEND=noninteractive"
       ],
-      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
-      "only": ["baseos"]
+      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'"
     },
     {
       "type": "shell",
@@ -94,8 +69,7 @@
         "CONTAINERD_VERSION={{ user `containerd_version` }}",
         "DOCKER_VERSION={{ user `docker_version` }}"
       ],
-      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
-      "only": ["baseos"]
+      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'"
     },
     {
       "type": "shell",
@@ -104,8 +78,7 @@
         "DEBIAN_FRONTEND=noninteractive",
         "KUBERNETES_VERSION={{ user `kubernetes_version` }}"
       ],
-      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
-      "only": ["baseos"]
+      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'"
     },
     {
       "type": "shell",
@@ -114,26 +87,7 @@
         "DEBIAN_FRONTEND=noninteractive"
       ],
       "expect_disconnect": true,
-      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
-      "only": ["baseos"]
-    },
-    {
-      "type": "shell",
-      "script": "./scripts/init-test-node.sh",
-      "environment_vars": [
-        "DEBIAN_FRONTEND=noninteractive"
-      ],
-      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
-      "only": ["baseos-test"]
-    },
-    {
-      "type": "shell",
-      "script": "./scripts/test-node.sh",
-      "environment_vars": [
-        "DEBIAN_FRONTEND=noninteractive"
-      ],
-      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
-      "only": ["baseos-test"]
+      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'"
     }
   ],
   "post-processors": [
@@ -143,8 +97,7 @@
         "sha256",
         "md5"
       ],
-      "output": "/tmp/ck8s-base-vm-checksums/{{ user `vm_name` }}_{{.ChecksumType}}.checksums",
-      "only": ["baseos"]
+      "output": "{{ user `output_iso_checksum_url` }}"
     }
   ]
 }

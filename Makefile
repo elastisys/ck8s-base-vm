@@ -1,27 +1,37 @@
+ROOT_PATH := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+
 test: baseos
-	PACKER_LOG=1 CHECKPOINT_DISABLE=1 packer build -only=baseos-test baseos.json > baseos-build-tests.log; \
+	PACKER_LOG=1 CHECKPOINT_DISABLE=1 \
+	packer build $(ROOT_PATH)baseos-test.json > \
+		$(ROOT_PATH)baseos-build-tests.log; \
 		case "$$?" in \
 			0) \
-			echo "Test finished successfully." \
+				echo "Test finished successfully." \
 			;; \
 			*) \
-			echo "Error while testing baseOS image, check baseos-build-test.log" \
+				echo "Error while testing baseOS image."; \
+				echo "Check: $(ROOT_PATH)baseos-build-test.log"; \
+				exit 1 \
 			;; \
-		  esac;
-
+		  esac
 
 baseos: baseos.json
-	PACKER_LOG=1 CHECKPOINT_DISABLE=1 packer build -only=baseos baseos.json > baseos-build.log; \
+	PACKER_LOG=1 CHECKPOINT_DISABLE=1 \
+	packer build $(ROOT_PATH)baseos.json > $(ROOT_PATH)baseos-build.log; \
 		case "$$?" in \
 			0) \
-			echo "BaseOS image created." \
+				echo "BaseOS image created." \
 			;; \
 			*) \
-			echo "Error while building baseOS image, check baseos-build.log" \
+				echo "Error building baseOS image."; \
+				echo "Check: $(ROOT_PATH)baseos-build.log"; \
+				exit 1 \
 			;; \
-		  esac;
+		  esac
 
 clean:
-	rm -rf output-baseos*
-	rm -f baseos-build*.log
-	rm -rf packer_cache
+	rm -rf $(ROOT_PATH)output-baseos*
+	rm -f $(ROOT_PATH)baseos-build*.log
+	rm -rf $(ROOT_PATH)packer_cache
+
+.PHONY: test baseos clean
