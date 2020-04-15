@@ -1,6 +1,10 @@
 {
   "description": "CK8S VM based on Ubuntu 18.04 LTS",
   "variables": {
+    "containerd_version": "1.2.10-3",
+    "docker_version": "5:18.09.9~3-0~ubuntu-bionic",
+    "kubernetes_version": "1.15.11-00",
+
     "disk_size": "20480",
     "iso_url": "https://cloud-images.ubuntu.com/releases/bionic/release-20200317/ubuntu-18.04-server-cloudimg-amd64.img",
     "iso_checksum": "fe303093982221b85eeb0a3060851d6a3a012aa151daf77c6c49d2b727138794",
@@ -86,7 +90,9 @@
       "type": "shell",
       "script": "./scripts/install-docker.sh",
       "environment_vars": [
-        "DEBIAN_FRONTEND=noninteractive"
+        "DEBIAN_FRONTEND=noninteractive",
+        "CONTAINERD_VERSION={{ user `containerd_version` }}",
+        "DOCKER_VERSION={{ user `docker_version` }}"
       ],
       "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
       "only": ["baseos"]
@@ -95,7 +101,8 @@
       "type": "shell",
       "script": "./scripts/install-k8s-tools.sh",
       "environment_vars": [
-        "DEBIAN_FRONTEND=noninteractive"
+        "DEBIAN_FRONTEND=noninteractive",
+        "KUBERNETES_VERSION={{ user `kubernetes_version` }}"
       ],
       "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
       "only": ["baseos"]

@@ -2,6 +2,9 @@
 
 set -e -x
 
+: "${CONTAINERD_VERSION:?Missing CONTAINERD_VERSION}"
+: "${DOCKER_VERSION:?Missing DOCKER_VERSION}"
+
 # Following the official K8S docs: https://kubernetes.io/docs/setup/production-environment/container-runtimes/
 
 # Install Docker CE
@@ -23,9 +26,9 @@ add-apt-repository \
 ## Install Docker CE.
 apt-get update
 apt-get install -y \
-  containerd.io=1.2.10-3 \
-  docker-ce=5:18.09.9~3-0~ubuntu-$(lsb_release -cs) \
-  docker-ce-cli=5:18.09.9~3-0~ubuntu-$(lsb_release -cs)
+  containerd.io="${CONTAINERD_VERSION}" \
+  docker-ce="${DOCKER_VERSION}" \
+  docker-ce-cli="${DOCKER_VERSION}"
 
 # Setup daemon.
 cat > /etc/docker/daemon.json <<EOF
