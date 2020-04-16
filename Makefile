@@ -2,8 +2,8 @@ ROOT_PATH := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 test: baseos
 	PACKER_LOG=1 CHECKPOINT_DISABLE=1 \
-	packer build $(ROOT_PATH)baseos-test.json > \
-		$(ROOT_PATH)baseos-build-tests.log; \
+	packer build -var-file $(ROOT_PATH)variables.json \
+		$(ROOT_PATH)baseos-test.json > $(ROOT_PATH)baseos-build-tests.log; \
 		case "$$?" in \
 			0) \
 				echo "Test finished successfully." \
@@ -17,7 +17,8 @@ test: baseos
 
 baseos: baseos.json
 	PACKER_LOG=1 CHECKPOINT_DISABLE=1 \
-	packer build $(ROOT_PATH)baseos.json > $(ROOT_PATH)baseos-build.log; \
+	packer build  -var-file $(ROOT_PATH)variables.json \
+		$(ROOT_PATH)baseos.json > $(ROOT_PATH)baseos-build.log; \
 		case "$$?" in \
 			0) \
 				echo "BaseOS image created." \

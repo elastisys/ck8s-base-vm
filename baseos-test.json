@@ -1,10 +1,5 @@
 {
   "description": "CK8S VM test",
-  "variables": {
-    "iso_checksum_url": "/tmp/ck8s-base-vm-checksums/baseos_sha256.checksums",
-
-    "ssh_username": "ubuntu"
-  },
   "builders": [
     {
       "name": "baseos-test",
@@ -18,7 +13,7 @@
       "shutdown_command": "echo 'shutdown -P now' > /tmp/shutdown.sh; sudo -S sh '/tmp/shutdown.sh'",
       "iso_url": "output-baseos/baseos.qcow2",
       "iso_checksum_type": "sha256",
-      "iso_checksum_url": "{{ user `iso_checksum_url` }}",
+      "iso_checksum_url": "{{ user `output_iso_checksum_path` }}",
       "disk_compression": false,
       "skip_compaction": true,
       "ssh_username": "{{ user `ssh_username` }}",
