@@ -29,7 +29,7 @@ Pre-requisites:
 Build steps:
 
 1. Clone the repo and move to its directory.
-2. Build the image: `$ make baseos`.
+2. Build the image: `$ make build`.
 3. Run tests: `$ make test`.
 4. Check `output-baseos` for the built qcow2 image and its associated checksum file.
 5. If you need to rebuild, first run `make clean` to remove all files created during previous builds.
