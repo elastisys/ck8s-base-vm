@@ -103,3 +103,131 @@ You can upload the image directly to OpenStack.
 ```bash
 openstack image create --disk-format qcow2 --file output-baseos/baseos.qcow2 CK8S-BaseOS-${VERSION}
 ```
+
+### Create an AMI
+Creating an AMI from the qcow2 image requires multiple steps, one of which is to convert it to a 20 GB .raw file and upload it to an S3 bucket. It is therefor recommended to do this on a good connection.
+
+This section is based on a [post](https://www.wavether.com/2016/11/import-qcow2-images-into-aws), with some changes and additions.
+
+#### Pre-requisites
+- AWS CLI
+- qemu-utils:
+  ```
+  $ sudo apt-get install qemu-utils
+  ```
+- An S3 bucket to store the intermediate raw image file, with public access unblocked
+
+#### Steps
+
+1. Build and test the baseos image as usual.
+
+2. Convert the image to raw format:
+   ```
+   $ qemu-img convert baseos.qcow baseos-my-version.raw
+   ```
+
+3. Upload the .raw image:
+
+   ```
+   $ aws s3 cp baseos-my-version.raw s3://my-s3-bucket
+   ```
+
+   This should take about 30 minutes on a 100 Mbit connection.
+
+4. Create an IAM role `vmimport` with [trust and role policies](https://docs.aws.amazon.com/vm-import/latest/userguide/vmie_prereqs.html#vmimport-role). This only needs to be done once, if multiple AMIs are to be created.
+    
+    4.1. Create `trust-policy.json`:
+    ```json
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Principal": { "Service": "vmie.amazonaws.com" },
+                "Action": "sts:AssumeRole",
+                "Condition": {
+                    "StringEquals":{
+                    "sts:Externalid": "vmimport"
+                    }
+                }
+            }
+        ]
+    }
+    ```
+
+    4.2. Create `vmimport` role with the trust policy:
+
+        $ aws iam create-role --role-name vmimport --assume-role-policy-document "file://$(pwd)/trust-policy.json"
+    
+
+    4.3. Create `role-policy.json`, filling in the name of the S3 bucket:
+    ```json
+    {
+        "Version":"2012-10-17",
+        "Statement":[
+            {
+                "Effect":"Allow",
+                "Action":[
+                    "s3:GetBucketLocation",
+                    "s3:GetObject",
+                    "s3:ListBucket" 
+                ],
+                "Resource":[
+                    "arn:aws:s3:::my-s3-bucket",
+                    "arn:aws:s3:::my-s3-bucket/*"
+                ]
+            },
+            {
+                "Effect":"Allow",
+                "Action":[
+                    "s3:GetBucketLocation",
+                    "s3:GetObject",
+                    "s3:ListBucket",
+                    "s3:PutObject",
+                    "s3:GetBucketAcl"
+                ],
+                "Resource":[
+                    "arn:aws:s3:::my-s3-bucket",
+                    "arn:aws:s3:::my-s3-bucket/*"
+                ]
+            },
+            {
+                "Effect":"Allow",
+                "Action":[
+                    "ec2:ModifySnapshotAttribute",
+                    "ec2:CopySnapshot",
+                    "ec2:RegisterImage",
+                    "ec2:Describe*"
+                ],
+                "Resource":"*"
+            }
+        ]
+    }
+    ```
+    4.4. Use the role policy:
+
+        
+        $ aws iam put-role-policy --role-name vmimport --policy-name vmimport --policy-document "file://$(pwd)/role-policy.json"
+        
+
+5. Generate a pre-signed url for bucket access:
+   ```
+   $ aws s3 presign s3://my-s3-bucket/baseos-my-version.raw
+   ```
+
+6. Create `container.json` with the pre-signed url:
+   ```json
+   {
+       "Description": "BaseOS my-version raw image",
+       "Format": "raw",
+       "Url": "<pre-signed url>"
+   }
+   ```
+
+7. Use the import-snapshot tool with `container.json`:
+   ```
+   $ aws ec2 import-snapshot --description "baseos my-version" --disk-container file://$(pwd)/container.json
+   ```
+   and wait until the snapshot appears in the AWS console under EC2->Elastic Block Storage->Snapshots.
+
+8. Select the newly created snapshot. Add a tag with version information, such as "baseos k8s version" : "1.17.05", to make it easier to identify. Then choose Actions->Create image, fill in the name, and click Create to finish AMI creation.
