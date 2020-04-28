@@ -19,3 +19,7 @@ apt-get install -y \
 # Support nfs-provisioner and Falco
 apt-get install -y nfs-common linux-headers-$(uname -r)
 apt-mark hold kubelet kubeadm kubectl
+
+# Prepare images required for setting up a Kubernetes cluster.
+# Not needed on worker nodes, hopefully garbage collected eventually.
+kubeadm config images pull
