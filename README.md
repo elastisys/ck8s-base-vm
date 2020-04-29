@@ -135,7 +135,7 @@ This section is based on a [post](https://www.wavether.com/2016/11/import-qcow2-
    This should take about 30 minutes on a 100 Mbit connection.
 
 4. Create an IAM role `vmimport` with [trust and role policies](https://docs.aws.amazon.com/vm-import/latest/userguide/vmie_prereqs.html#vmimport-role). This only needs to be done once, if multiple AMIs are to be created.
-    
+
     4.1. Create `trust-policy.json`:
     ```json
     {
@@ -158,7 +158,7 @@ This section is based on a [post](https://www.wavether.com/2016/11/import-qcow2-
     4.2. Create `vmimport` role with the trust policy:
 
         $ aws iam create-role --role-name vmimport --assume-role-policy-document "file://$(pwd)/trust-policy.json"
-    
+
 
     4.3. Create `role-policy.json`, filling in the name of the S3 bucket:
     ```json
@@ -170,7 +170,7 @@ This section is based on a [post](https://www.wavether.com/2016/11/import-qcow2-
                 "Action":[
                     "s3:GetBucketLocation",
                     "s3:GetObject",
-                    "s3:ListBucket" 
+                    "s3:ListBucket"
                 ],
                 "Resource":[
                     "arn:aws:s3:::my-s3-bucket",
@@ -206,9 +206,9 @@ This section is based on a [post](https://www.wavether.com/2016/11/import-qcow2-
     ```
     4.4. Use the role policy:
 
-        
+
         $ aws iam put-role-policy --role-name vmimport --policy-name vmimport --policy-document "file://$(pwd)/role-policy.json"
-        
+
 
 5. Generate a pre-signed url for bucket access:
    ```
@@ -231,3 +231,6 @@ This section is based on a [post](https://www.wavether.com/2016/11/import-qcow2-
    and wait until the snapshot appears in the AWS console under EC2->Elastic Block Storage->Snapshots.
 
 8. Select the newly created snapshot. Add a tag with version information, such as "baseos k8s version" : "1.17.05", to make it easier to identify. Then choose Actions->Create image, fill in the name, and click Create to finish AMI creation.
+
+**Note**: To be able to use the image from another AWS account, add that
+account number under Actions->Modify Image Permissions.
