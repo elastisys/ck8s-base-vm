@@ -1,7 +1,7 @@
 {
   "containerd_version": "1.2.10-3",
   "docker_version": "5:18.09.9~3-0~ubuntu-bionic",
-  "kubernetes_version": "1.16.12-00",
+  "kubernetes_version": "1.17.9-00",
 
   "disk_size": "20480",
 
