@@ -1,52 +1,61 @@
 {
-  "description": "CK8S VM test",
   "builders": [
     {
-      "name": "baseos-test",
-      "type": "qemu",
       "accelerator": "kvm",
-      "vm_name": "test-baseos.qcow2",
-      "headless": true,
-      "output_directory": "./output-baseos-test",
-      "disk_image": true,
-      "use_backing_file": true,
-      "shutdown_command": "echo 'shutdown -P now' > /tmp/shutdown.sh; sudo -S sh '/tmp/shutdown.sh'",
-      "iso_url": "output-baseos/baseos.qcow2",
-      "iso_checksum_type": "sha256",
-      "iso_checksum_url": "{{ user `output_iso_checksum_path` }}",
       "disk_compression": false,
-      "skip_compaction": true,
-      "ssh_username": "{{ user `ssh_username` }}",
-      "ssh_private_key_file": ".ssh/id_rsa",
-      "ssh_port": 22,
-      "ssh_wait_timeout": "10000s",
-      "vnc_bind_address": "0.0.0.0",
-      "vnc_port_min": 5900,
-      "vnc_port_max": 5900,
+      "disk_image": true,
+      "headless": true,
       "http_directory": "cloud-init/baseos-test",
+      "iso_checksum": "file:{{ user `output_iso_checksum_path` }}",
+      "iso_url": "output-baseos/baseos.qcow2",
+      "name": "baseos-test",
+      "output_directory": "./output-baseos-test",
       "qemuargs": [
-        [ "-m", "2048M" ],
-        [ "-smp", "2" ],
-        [ "-smbios", "type=1,serial=ds=nocloud-net;instance-id=packer;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/" ]
-      ]
+        [
+          "-m",
+          "2048M"
+        ],
+        [
+          "-smp",
+          "2"
+        ],
+        [
+          "-smbios",
+          "type=1,serial=ds=nocloud-net;instance-id=packer;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/"
+        ]
+      ],
+      "shutdown_command": "echo 'shutdown -P now' > /tmp/shutdown.sh; sudo -S sh '/tmp/shutdown.sh'",
+      "skip_compaction": true,
+      "ssh_port": 22,
+      "ssh_private_key_file": ".ssh/id_rsa",
+      "ssh_timeout": "10000s",
+      "ssh_username": "{{ user `ssh_username` }}",
+      "type": "qemu",
+      "use_backing_file": true,
+      "vm_name": "test-baseos.qcow2",
+      "vnc_bind_address": "0.0.0.0",
+      "vnc_port_max": 5900,
+      "vnc_port_min": 5900
     }
   ],
+  "description": "CK8S VM test",
   "provisioners": [
     {
-      "type": "shell",
-      "script": "./scripts/init-test-node.sh",
       "environment_vars": [
         "DEBIAN_FRONTEND=noninteractive"
       ],
-      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'"
+      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
+      "script": "./scripts/init-test-node.sh",
+      "type": "shell"
     },
     {
-      "type": "shell",
-      "script": "./scripts/test-node.sh",
       "environment_vars": [
         "DEBIAN_FRONTEND=noninteractive"
       ],
-      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'"
+      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
+      "script": "./scripts/test-node.sh",
+      "type": "shell"
     }
   ]
 }
+
