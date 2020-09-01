@@ -23,7 +23,7 @@ Unattended updates have been disabled and all K8S package versions are pinned to
 
 Pre-requisites:
 
-* Packer 1.5+ (https://www.packer.io/downloads.html)
+* Packer 1.6+ (https://www.packer.io/downloads.html)
 * KVM (https://help.ubuntu.com/community/KVM/Installation)
 
 Build steps:

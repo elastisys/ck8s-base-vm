@@ -49,7 +49,7 @@
         "sha256",
         "md5"
       ],
-      "output": "{{ user `output_iso_checksum_path` }}",
+      "output": "./output-baseos/baseos_{{.ChecksumType}}.checksum",
       "type": "checksum"
     }
   ],

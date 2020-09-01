@@ -6,7 +6,7 @@
       "disk_image": true,
       "headless": true,
       "http_directory": "cloud-init/baseos-test",
-      "iso_checksum": "file:{{ user `output_iso_checksum_path` }}",
+      "iso_checksum": "file:./output-baseos/baseos_sha256.checksum",
       "iso_url": "output-baseos/baseos.qcow2",
       "name": "baseos-test",
       "output_directory": "./output-baseos-test",
