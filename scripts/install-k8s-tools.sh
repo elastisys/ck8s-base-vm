@@ -3,7 +3,9 @@
 set -e -x
 
 
-: "${KUBERNETES_VERSION:?Missing KUBERNETES_VERSION}"
+: "${KUBELET_VERSION:?Missing KUBELET_VERSION}"
+: "${KUBEADM_VERSION:?Missing KUBEADM_VERSION}"
+: "${KUBECTL_VERSION:?Missing KUBECTL_VERSION}"
 
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 
@@ -13,9 +15,9 @@ EOF
 
 apt-get update
 apt-get install -y \
-    kubelet="${KUBERNETES_VERSION}" \
-    kubeadm="${KUBERNETES_VERSION}" \
-    kubectl="${KUBERNETES_VERSION}"
+    kubelet="${KUBELET_VERSION}" \
+    kubeadm="${KUBEADM_VERSION}" \
+    kubectl="${KUBECTL_VERSION}"
 # Support nfs-provisioner and Falco
 apt-get install -y nfs-common linux-headers-$(uname -r)
 apt-mark hold kubelet kubeadm kubectl

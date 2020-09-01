@@ -76,7 +76,9 @@
     {
       "environment_vars": [
         "DEBIAN_FRONTEND=noninteractive",
-        "KUBERNETES_VERSION={{ user `kubernetes_version` }}"
+        "KUBELET_VERSION={{ user `kubelet_version` }}",
+        "KUBEADM_VERSION={{ user `kubeadm_version` }}",
+        "KUBECTL_VERSION={{ user `kubectl_version` }}"
       ],
       "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
       "script": "./scripts/install-k8s-tools.sh",
