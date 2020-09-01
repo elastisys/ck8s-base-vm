@@ -43,7 +43,7 @@ case "${1}" in
             ;;
             *)
                 echo -e "\e[31mError while testing baseOS image.\e[0m" >&2
-                echo "Check: ${baseos_test_log}" >&2
+                echo "Check: ${test_log}" >&2
                 exit 1
             ;;
         esac
