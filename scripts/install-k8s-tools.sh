@@ -2,7 +2,6 @@
 
 set -e -x
 
-
 : "${KUBELET_VERSION:?Missing KUBELET_VERSION}"
 : "${KUBEADM_VERSION:?Missing KUBEADM_VERSION}"
 : "${KUBECTL_VERSION:?Missing KUBECTL_VERSION}"
@@ -24,4 +23,7 @@ apt-mark hold kubelet kubeadm kubectl
 
 # Prepare images required for setting up a Kubernetes cluster.
 # Not needed on worker nodes, hopefully garbage collected eventually.
+kubeadm config images pull \
+    --kubernetes-version "$(kubelet --version | awk '{print $2}')"
+# Pull images for latest version as well to speed up upgrades.
 kubeadm config images pull
