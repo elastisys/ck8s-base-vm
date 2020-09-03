@@ -2,5 +2,4 @@
 
 set -e -x
 
-kubeadm config images pull
-kubeadm init
+kubeadm init --kubernetes-version "$(kubelet --version | awk '{print $2}')"
