@@ -43,6 +43,19 @@ Build steps:
   Note that you will need to check the log for these results!
 * Known issue: relative path to checksum does not work (see https://github.com/hashicorp/packer/issues/9047)
 
+## Non-image environments
+
+In environments where images are not an option, e.g. bare-metal that are not provisioned using machine images, the Ansible playbooks can be run manually.
+
+```
+ansible-playbook -i [inventory] -e @variables.json ansible/provision.yaml
+```
+
+To undo the provisioning run:
+
+```
+ansible-playbook -i [inventory] ansible/reset.yaml
+```
 
 ## Troubleshooting
 

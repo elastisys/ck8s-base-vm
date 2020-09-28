@@ -1,0 +1,47 @@
+SSH_PUB_KEY = File.read(File.join(Dir.home, ".ssh/id_rsa.pub"))
+
+hosts = {
+    "master1": {
+        "cpus": 2,
+        "memory": 2048,
+        "ip": "10.0.10.10",
+    },
+    "worker1": {
+        "cpus": 2,
+        "memory": 2048,
+        "ip": "10.0.10.20",
+    },
+    # "worker2": {
+    #     "cpus": 2,
+    #     "memory": 4096,
+    #     "ip": "10.0.10.21",
+    # },
+}
+
+Vagrant.configure("2") do |config|
+    config.vm.box = "generic/ubuntu1804"
+
+    config.vm.synced_folder ".", "/vagrant", disabled: true
+
+    config.vm.provision :shell, :inline => <<-EOF
+        echo '#{SSH_PUB_KEY}' >> /home/vagrant/.ssh/authorized_keys
+    EOF
+
+    hosts.each do |name, cfg|
+        config.vm.define name do |node|
+            node.vm.hostname = name
+            node.vm.network :private_network, ip: cfg[:ip]
+
+            node.vm.provider :libvirt do |lv|
+                lv.memory = cfg[:memory]
+                lv.cpus = cfg[:cpus]
+            end
+
+            node.vm.provider :virtualbox do |vbox|
+                vbox.customize ["modifyvm", :id, "--memory", cfg[:memory]]
+                vbox.cpus = cfg[:cpus]
+            end
+        end
+    end
+
+end
