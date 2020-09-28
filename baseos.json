@@ -64,24 +64,16 @@
       "type": "shell"
     },
     {
-      "environment_vars": [
-        "DEBIAN_FRONTEND=noninteractive",
-        "CONTAINERD_VERSION={{ user `containerd_version` }}",
-        "DOCKER_VERSION={{ user `docker_version` }}"
-      ],
-      "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
-      "script": "./scripts/install-docker.sh",
-      "type": "shell"
+      "type": "ansible",
+      "playbook_file": "./ansible/provision.yaml",
+      "extra_arguments": ["-e", "@./variables.json"]
     },
     {
       "environment_vars": [
-        "DEBIAN_FRONTEND=noninteractive",
-        "KUBELET_VERSION={{ user `kubelet_version` }}",
-        "KUBEADM_VERSION={{ user `kubeadm_version` }}",
-        "KUBECTL_VERSION={{ user `kubectl_version` }}"
+        "DEBIAN_FRONTEND=noninteractive"
       ],
       "execute_command": "sudo -S bash -c '{{ .Vars }} {{ .Path }}'",
-      "script": "./scripts/install-k8s-tools.sh",
+      "script": "./scripts/pre-pull-k8s-images.sh",
       "type": "shell"
     },
     {

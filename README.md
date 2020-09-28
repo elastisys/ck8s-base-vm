@@ -25,6 +25,7 @@ Pre-requisites:
 
 * Packer 1.6+ (https://www.packer.io/downloads.html)
 * KVM (https://help.ubuntu.com/community/KVM/Installation)
+* Ansible (https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) (tested with 2.9.7)
 
 Build steps:
 
