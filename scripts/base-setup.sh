@@ -27,10 +27,6 @@ disable apt-daily.timer
 disable apt-daily-upgrade.timer
 END
 
-# Disable swap and remove swap partititions
-swapoff -a
-sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
-
 # Add CloudStack cloud-init datasource, required by Exoscale for cloud-init enabled images
 cat << END >> /etc/cloud/cloud.cfg.d/99_exoscale.cfg
 datasource:
@@ -39,6 +35,3 @@ datasource:
 datasource_list:
   - CloudStack
 END
-
-# Reboot to cleanup swap files
-reboot
