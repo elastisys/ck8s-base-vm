@@ -1,0 +1,40 @@
+- hosts: all
+  gather_facts: true
+  become: yes
+  become_user: root
+  tasks:
+
+    - name: Stop Docker service
+      systemd:
+        name: docker
+        state: stopped
+        enabled: no
+
+    - name: Uninstall Kubernetes, Docker, containerd and nfs-common
+      apt:
+        name:
+          - containerd.io
+          - docker-ce
+          - kubelet
+          - kubeadm
+          - kubectl
+          - nfs-common
+        state: absent
+
+    - name: Remove /etc/(docker|kubernetes)
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - /etc/docker
+        - /etc/kubernetes
+
+    - name: Enable swap in fstab
+      replace:
+        path: /etc/fstab
+        regexp: '^# (.*?\sswap\s+sw\s+.*)$'
+        replace: '\1'
+
+    - name: Enable swap
+      shell: swapon -a
+      when: ansible_swaptotal_mb == 0
