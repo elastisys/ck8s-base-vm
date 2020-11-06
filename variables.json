@@ -1,14 +1,14 @@
 {
   "containerd_version": "1.2.10-3",
   "docker_version": "5:18.09.9~3-0~ubuntu-bionic",
-  "kubelet_version": "1.17.11-00",
-  "kubeadm_version": "1.18.8-00",
-  "kubectl_version": "1.18.8-00",
+  "kubelet_version": "1.18.10-00",
+  "kubeadm_version": "1.19.3-00",
+  "kubectl_version": "1.19.3-00",
 
   "disk_size": "20480",
 
-  "source_iso_url": "https://cloud-images.ubuntu.com/releases/bionic/release-20200901/ubuntu-18.04-server-cloudimg-amd64.img",
-  "source_iso_checksum": "ac431980ee6600f1cb1971229915e59696af7189e94d0fd2e7aa6f54927f2b32",
+  "source_iso_url": "https://cloud-images.ubuntu.com/releases/bionic/release-20201031/ubuntu-18.04-server-cloudimg-amd64.img",
+  "source_iso_checksum": "5f7fea2bfd9f0471eb70b47fdabe9c60dc71440172588f0aa68a1d29a636b11e",
 
   "output_vm_name": "baseos.qcow2",
 
