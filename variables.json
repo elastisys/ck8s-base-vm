@@ -1,9 +1,9 @@
 {
   "containerd_version": "1.2.10-3",
-  "docker_version": "5:18.09.9~3-0~ubuntu-bionic",
-  "kubelet_version": "1.18.10-00",
-  "kubeadm_version": "1.19.3-00",
-  "kubectl_version": "1.19.3-00",
+  "docker_version": "5:19.03.13~3-0~ubuntu-bionic",
+  "kubelet_version": "1.18.12-00",
+  "kubeadm_version": "1.19.4-00",
+  "kubectl_version": "1.19.4-00",
 
   "disk_size": "20480",
 
