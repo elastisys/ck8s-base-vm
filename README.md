@@ -1,3 +1,7 @@
+# DEPRECATED
+
+NOTE: This repository is no longer maintained since Compliant Kubernetes has moved on to use Kubespray, which makes the Base VM template obsolete.
+
 # ck8s-base-vm
 
 Base image for K8S nodes (Ubuntu 18.04 LTS).
